@@ -1,0 +1,79 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class Window extends JFrame implements Runnable{
+    Thread t;
+    private double speed=5;
+    private static double x=100;
+    private static double y=100;
+    private static double degree=45;
+    private int width=50;
+    private int height=50;
+    private int time=0;
+    boolean judge=false;
+    public static final int WIDTH=700;
+    public static final int HEIGHT=500;
+    public Window(String title){
+        setTitle(title);
+        setBounds(500,200,WIDTH,HEIGHT);
+        degree=Math.random()*180;
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(time==5){
+                    JOptionPane.showMessageDialog(null, "qjk祝你新年快乐!", "彩蛋",JOptionPane.PLAIN_MESSAGE);
+                }
+                time++;
+                degree=Math.random()*180;
+                x=e.getX();
+                y=e.getY();
+                create_Thread();
+            }
+        });
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void create_Thread(){
+        t=new Thread(this);
+        t.start();
+    }
+
+    @Override
+    public void run() {
+        judge=true;
+        while(true){
+            repaint();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.setColor(Color.green);
+        if (judge){
+            g.fillOval((int)x,(int)y,width,height);
+            x+=speed*Math.cos(degree);
+            y+=speed*Math.sin(degree);
+            if(x<10||x>WIDTH-width){
+                degree=Math.PI-degree;
+            }
+            if(y<30||y>HEIGHT-height){
+                degree=-degree;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Window window=new Window("弹球");
+        window.setVisible(true);
+    }
+}
